@@ -1,0 +1,49 @@
+public class solution{
+    public static int LIS(int []  arr , int n){
+        int [] []  dp = new int [n][n+1];
+        for(int []  rows : dp){
+            Arrays.fill(rows,-1);
+        }
+       // return findSubsequence( 0 ,- 1 , arr);
+        return memoizationForLis(0 ,-1 , arr, dp);
+    }
+    // this is recursive approach to solve...
+    public static int findSubsequence(int index, int prevIndex, int [] arr){
+        if(index==arr.length)  return 0;
+
+        // if we do not consider current element.
+        int nonTake = findSubsequence(index+1, prevIndex, arr);
+        int take = 0;
+        if(prevIndex==-1 || arr[index]>arr[prevIndex]){
+            take= 1+findSubsequence(index+1,  index , arr);
+        }
+        return Math.max(take, nonTake);
+    }
+    public static int memoizationForLis(int index, int prevIndex,  int [] arr , int [][] dp){
+        if(index==arr.length) return 0;
+        if(dp[index][prevIndex+1]!=-1) return dp[index][prevIndex+1];
+        int nonTake = memoizationForLis(index+1 , prevIndex , arr , dp);
+        int take  = 0;
+        if(prevIndex==-1 ||arr[index]>arr[prevIndex]){
+            take = 1+memoizationForLis(index+1 , index , arr, dp);
+        }
+        return dp[index][prevIndex+1] = Math.max(take , nonTake);
+    }
+    public static int tabulationForLis(int [] arr , int n ){
+        int [][] dp = new int[n+1][n+1];
+        // base case need not be handled explicitly.
+
+        for(int i =n-1 ; i>=0; i--){
+            for(int j = i-1; j>=-1;  j--){
+                int notTake = dp[i+1][j+1];
+                int take = 0;
+                if(j==-1 || arr[i]>arr[j]){
+                    take =  1+dp[i+1][i+1];
+                }
+                dp[i][j+1] = Math.max(take ,notTake);
+            }
+        }
+        return dp[0][-1+1];
+
+    }
+}
